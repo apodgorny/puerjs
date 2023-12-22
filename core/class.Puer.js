@@ -26,7 +26,6 @@ class PuerConstructor {
 			this.owner
 			this.path
 			this.appPath
-			this.isReferencing
 			this.isRouting = true
 			this._cssUrls  = new Set()
 			this._cssCount = 0
@@ -43,10 +42,9 @@ class PuerConstructor {
 	_init() {
 		this._setTimezoneCookie()
 		this._classToType = {}
-		'Boolean Number String Function Array Date RegExp Object Error Symbol'.split(' ')
+		'Boolean Number String Function Array Date RegExp Object Error Symbol Undefined Null'.split(' ')
 			.forEach(name => {
-				const typeName = name.toLowerCase()
-				this._classToType['[object ' + name + ']'] = typeName
+				this._classToType['[object ' + name + ']'] = name.toLowerCase()
 			})
 		this.Error  = PuerError
 		this.Event  = {}
@@ -116,7 +114,6 @@ class PuerConstructor {
 		Object.defineProperty(this, name, {
 			get: function() {
 				// console.log('start referencing')
-				this.isReferencing = true
 				return f
 			}
 		})
@@ -175,19 +172,28 @@ class PuerConstructor {
 
 	/*********************** PUBLIC ***********************/
 
-	isFunction(o) { return this.type(o) === 'function' }
-	isBoolean(o)  { return this.type(o) === 'boolean'  }
-	isObject(o)   { return this.type(o) === 'object'   }
-	isString(o)   { return this.type(o) === 'string'   }
-	isNumber(o)   { return this.type(o) === 'number'   }
-	isRegexp(o)   { return this.type(o) === 'regexp'   }
-	isSymbol(o)   { return this.type(o) === 'symbol'   }
-	isError(o)    { return this.type(o) === 'error'    }
-	isArray(o)    { return this.type(o) === 'array'    }
-	isDate(o)     { return this.type(o) === 'date'     }
+	isFunction(o)  { return this.type(o) === 'function'  }
+	isBoolean(o)   { return this.type(o) === 'boolean'   }
+	isObject(o)    { return this.type(o) === 'object'    }
+	isString(o)    { return this.type(o) === 'string'    }
+	isNumber(o)    { return this.type(o) === 'number'    }
+	isRegexp(o)    { return this.type(o) === 'regexp'    }
+	isSymbol(o)    { return this.type(o) === 'symbol'    }
+	isError(o)     { return this.type(o) === 'error'     }
+	isArray(o)     { return this.type(o) === 'array'     }
+	isDate(o)      { return this.type(o) === 'date'      }
+	isUndefined(o) { return this.type(o) === 'undefined' }
+	isNull(o)      { return this.type(o) === 'null'      }
 
 	isPrimitive(o) {
-		return ['string', 'number', 'boolean'].includes(this.type(o))
+		return [
+			'string',
+			'number',
+			'boolean',
+			'symbol',
+			'undefined',
+			'null'
+		].includes(this.type(o))
 	}
 
 	application(cls, importUrl, init) {
@@ -201,16 +207,6 @@ class PuerConstructor {
 
 	router(getRoutes) {
 		return this.Router.define(getRoutes)
-	}
-	
-	reference(id) {
-		return new this.Reference(id)
-	}
-
-	dereference(value) {
-		return value && value.isReference 
-			? value.dereference()
-			: value
 	}
 
 	defer(f, timeout=1) {

@@ -39,7 +39,7 @@ class BasePuerComponent extends PuerObject {
 		this._cascade('__render')
 		this._setupElement()
 		this._createText()
-		this.addCssClass(... this.classes.map(c => $.dereference(c)))
+		this.addCssClass(... this.classes)
 		this._addEvents()
 		this.onRender && this.onRender()
 	}
@@ -199,7 +199,6 @@ class BasePuerComponent extends PuerObject {
 	}
 
 	_createText() {
-		// $.isReferencing = true // TODO
 		const value = this.props.text
 
 		if (value) {
@@ -214,7 +213,6 @@ class BasePuerComponent extends PuerObject {
 			component.__render()
 			this.element.appendChild(component.element)
 		}
-		// $.isReferencing = false // TODO
 	}
 
 	_applyProps() {
@@ -225,7 +223,7 @@ class BasePuerComponent extends PuerObject {
 
 	_applyProp(prop) {
 		if (this.element) {
-			const value = $.dereference(this.props[prop])
+			const value = this.props[prop]
 			if (prop.startsWith('css')) {
 				const cssProp = $.String.camelToLower(prop.replace(/^css/, ''))
 				this.css(cssProp, value)

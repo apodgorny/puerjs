@@ -102,7 +102,7 @@ export default class DataSource {
 	}
 	
 	_addItemToStore(item) {
-		const itemId = DataSource.PUER.DataStore.set(null, item)
+		const itemId = DataSource.PUER.DataStore.set(null, item).id
 		item.dataId = itemId
 		this.itemIds.push(itemId)
 	}

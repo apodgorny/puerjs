@@ -21,7 +21,7 @@ class PuerProps extends PuerProxy {
 	extractEvents(owner) {
 		const events = {}
 		for (const prop in this.references) {
-			let value = this.references[prop].dereference()
+			let value = this.references[prop]
 			if (typeof value === 'function' && $.isEvent(prop)) {
 				events[prop.substring(2).toLowerCase()] = value.bind(owner)
 				delete this.references[prop]
@@ -34,7 +34,7 @@ class PuerProps extends PuerProxy {
 		if (!this.references.hasOwnProperty(prop)) {
 			return null
 		}
-		const value = this.references[prop].dereference() || null
+		const value = this.references[prop]
 		delete this.references[prop]
 		return value
 	}

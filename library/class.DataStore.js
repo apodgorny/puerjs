@@ -20,10 +20,11 @@ export default class DataStore {
 			}
 			return items
 		} else {
-			if (DataStore.PUER.isReferencing) {
-				return DataStore.references[id] || null
+			const value = DataStore.values[id]
+			if (DataStore.PUER.isPrimitive(value)) {
+				return value
 			}
-			return DataStore.values[id] || null
+			return DataStore.references[id] || null
 		}
 	}
 
@@ -34,11 +35,11 @@ export default class DataStore {
 		const isChanged = !id || (DataStore.values[id] !== value)
 		id = id || DataStore._nextId()
 		DataStore.values[id]     = value
-		DataStore.references[id] = DataStore.PUER.reference(id)
+		DataStore.references[id] = new DataStore.PUER.Reference(id)
 		if (isChanged) {
 			DataStore.updateOwners(id)
 		}
-		return id
+		return DataStore.references[id]
 	}
 
 	static unset(id) {

@@ -11,15 +11,13 @@ class PuerProxy {
 		for (const prop in props) {
 			this.setProp(prop, props[prop])
 		}
-		
-		$.isReferencing = false
 
 		const handler = Object.assign({
 			get: (target, prop) => {
 				if (prop === Symbol.iterator) {
 					return function*() {
 						for (let _prop in target.references) {
-							yield [_prop, target.references[_prop].dereference()]
+							yield [_prop, target.references[_prop]]
 						}
 					}
 				}
@@ -29,9 +27,7 @@ class PuerProxy {
 						: target[prop]
 				}
 				if (prop in target.references) {
-					return $.isReferencing
-						? target.references[prop]
-						: target.references[prop].dereference()
+					return target.references[prop]
 				}
 			},
 			set: (target, prop, value) => {
@@ -71,15 +67,10 @@ class PuerProxy {
 		} else {
 			if (reference) {
 				$.DataStore.set(reference.id, value)
-				// reference.reuse(id) TODO: figure out why this was here
 			} else {
-				id = $.DataStore.set(null, value)
-				reference = new Reference(id)
+				this.references[prop] = $.DataStore.set(null, value)
 			}
-
-			this.references[prop] = reference
 		}
-
 		$.DataStore.addOwner(id, prop, this.owner, this.onChangeMethod)
 	}
 

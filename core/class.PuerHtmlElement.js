@@ -25,7 +25,7 @@ class PuerHtmlElement extends BasePuerComponent {
 		this.element = this._renderElement()
 		// console.log(this.id, $.components.hasOwnProperty(this.id))
 		// if (!$.components.hasOwnProperty(this.id)) {
-			this.element.setAttribute('id', $.dereference(this.id))
+			this.element.setAttribute('id', this.id)
 		// } else {
 			// console.warn(`Id "${this.id}" has already been used`)
 		// }

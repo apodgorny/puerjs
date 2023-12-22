@@ -49,9 +49,10 @@ class PuerComponent extends BasePuerComponent {
 	}
 
 	_computeClasses() {
+		console.log('VALUE', this.classes.value)
 		return this.getPropsInProto('chainName', 'PuerComponent')
 			.map(s => $.String.camelToKebab(s))
-			.concat(this.classes)
+			.concat(this.classes.value)
 	}
 
 	/*********************** PUBLIC ***********************/

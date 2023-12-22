@@ -16,10 +16,10 @@ class Reference {
 					}
 				} else if (typeof prop == 'string') {
 					// console.log('ORIGINAL', prop, target._accessors)
-					const clone = target.clone()
-					clone._accessors.push(prop)
+					const refClone = target.clone()
+					refClone._accessors.push(prop)
 					// console.log('CLONE', prop, refClone._accessors)
-					return clone
+					return refClone
 				}
 				return proxy
 			},
@@ -30,7 +30,6 @@ class Reference {
 						_value = _value[accessor]
 					}
 					_value[prop] = value
-					Reference.PUER.DataStore.updateOwners(target.id)
 					// target._accessors.push(prop)
 					// target._accessors = [] TODO
 				}
@@ -48,7 +47,12 @@ class Reference {
 		Reference.PUER.DataStore.set(this.id, value)
 	}
 
-	get value() {
+	reuse(id) {
+		this.id = id
+		this._accessors = []
+	}
+
+	dereference() {
 		let value = this.rootValue
 		for (const accessor of this._accessors) {
 			if (!value) {
@@ -56,7 +60,7 @@ class Reference {
 			}
 			value = value[accessor]
 		}
-		return value || null
+		return value || ''
 	}
 
 	clone() {
